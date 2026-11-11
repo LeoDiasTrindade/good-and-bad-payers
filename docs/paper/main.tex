@@ -1,0 +1,33 @@
+% Compile this file. See README.md for local and Overleaf instructions.
+\documentclass[11pt,a4paper]{article}
+\usepackage{paper}
+\input{metadata}
+
+\begin{document}
+\makepapertitle
+
+\begin{abstract}
+  \input{sections/abstract}
+\end{abstract}
+
+\makepaperkeywords
+
+\input{sections/introduction}
+\input{sections/data}
+\input{sections/method}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+\input{sections/author-contributions}
+\input{sections/ai-use}
+
+% Enable \paperbibliographytrue in metadata.tex after adding real references
+% to references.bib and citing them in the text.
+\ifpaperbibliography
+  \bibliographystyle{plainnat}
+  \bibliography{references}
+\else
+  \section*{References}
+  \input{sections/references-placeholder}
+\fi
+\end{document}

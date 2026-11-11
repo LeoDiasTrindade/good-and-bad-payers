@@ -1,0 +1,63 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{paper}[2026/11/10 Single-column ML paper layout]
+
+% Standard packages; compatible with pdfLaTeX, XeLaTeX and Tectonic.
+\RequirePackage{iftex}
+\ifPDFTeX
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[utf8]{inputenc}
+\fi
+\RequirePackage{lmodern}
+\RequirePackage[english]{babel}
+\RequirePackage[a4paper,top=28mm,bottom=25mm,left=25mm,right=25mm]{geometry}
+\RequirePackage{microtype}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{titlesec}
+\RequirePackage[authoryear,round]{natbib}
+\RequirePackage[hidelinks]{hyperref}
+
+\graphicspath{{figures/}}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{1em}
+\widowpenalty=10000
+\clubpenalty=10000
+
+% Compact numbered headings, following the reference paper's visual style.
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalfont\normalsize\itshape}{\thesubsection.}{1em}{}
+\titlespacing*{\section}{0pt}{1.5ex plus .5ex minus .2ex}{.8ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus .4ex minus .2ex}{.6ex plus .2ex}
+
+\newif\ifpaperbibliography
+
+% Same inset as the abstract, following the reference's front matter.
+\newcommand{\makepaperkeywords}{%
+  \begin{list}{}{\setlength{\leftmargin}{8mm}\setlength{\rightmargin}{8mm}}
+    \item\relax\small\textit{Keywords:} \paperkeywords
+  \end{list}\vspace{2mm}%
+}
+
+\newcommand{\makepapertitle}{%
+  \begin{center}
+    \vspace*{6mm}
+    {\Large\bfseries \papertitle\par}
+    \vspace{5mm}
+    {\normalsize \paperauthors\par}
+    \vspace{4mm}
+    {\small \paperaffiliations\par}
+    \vspace{5mm}
+  \end{center}
+}
+
+% Explicit Abstract heading required by the project, within a narrower block.
+\renewenvironment{abstract}{%
+  \begin{list}{}{\setlength{\leftmargin}{8mm}\setlength{\rightmargin}{8mm}}
+  \item\relax\small
+  \noindent\textbf{Abstract}\par\smallskip\noindent\ignorespaces
+}{\par\end{list}\vspace{2mm}}
+
+\renewcommand{\refname}{References}
+\pagestyle{empty}
