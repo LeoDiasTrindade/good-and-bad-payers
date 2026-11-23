@@ -1,0 +1,14 @@
+<section id="question">
+<div class="head">
+<p class="eyebrow">THE QUESTION</p>
+<h2>Can we rank loan applicants by their risk?</h2>
+</div>
+<p>Kaggle’s <i>Give Me Some Credit</i>: for each past client, their credit history, income and age, and whether they became <b>90+ days late within two years</b>. A bank needs a score that <b>ranks</b> well and a reason it can <b>explain</b>.</p>
+<div class="stats">
+<div class="stat"><p class="num">150,000</p><p class="label">labelled clients</p></div>
+<div class="stat"><p class="num">10</p><p class="label">numerical features</p></div>
+<div class="stat"><p class="num num-orange">6.7%</p><p class="label">defaulted</p></div>
+</div>
+<p class="callout">“Everyone repays” is already <b>93.3% accurate</b>, so accuracy is useless here. I use <b>AUC</b> to judge the ranking and <b>log-loss</b> to judge the probabilities (Lectures 6 and 10).</p>
+<aside>The data is the Kaggle competition Give Me Some Credit: 150 thousand past clients, ten numerical features, and a label saying whether they became seriously late. Only 6.7 percent did. That number shapes everything: a model that says “everyone repays” is already 93 percent accurate, without looking at the data. So, as in Lecture 6, accuracy is out. I judge the ranking with the AUC and the probabilities with the log-loss.</aside>
+</section>

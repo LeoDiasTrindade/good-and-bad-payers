@@ -1,0 +1,19 @@
+{
+  "v": 5,
+  "createdOnFiles": {"v": 1, "at": "2026-11-23T21:00:00Z"},
+  "lists": "css",
+  "format": {"v": 1, "shared": ["project/deck.css"]},
+  "title": "Good and Bad Payers — Lightning Talk",
+  "cover": "cover",
+  "order": ["cover", "question", "eda", "method", "tried", "results", "drivers", "next"],
+  "sections": {
+    "s1": {"description": "Opening: the question, the data and why accuracy is the wrong metric", "start": "cover"},
+    "s2": {"description": "Process: what the data hid, the two models and the protocol, and what I tried", "start": "eda"},
+    "s3": {"description": "Findings on the test set, what drives the risk, and what I would do differently", "start": "results"}
+  },
+  "faces": {
+    "space-grotesk": {"family": "Space Grotesk", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"},
+    "inter": {"family": "Inter", "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"}
+  },
+  "designSystems": []
+}
