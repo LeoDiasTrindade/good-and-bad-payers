@@ -16,3 +16,6 @@ wheels/
 
 # Local PDF inspection tools and portable LaTeX compiler
 .qa-runtime/
+
+# outputs gerados
+submissions/
