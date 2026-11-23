@@ -1,16 +1,28 @@
 \section{Introduction}
 \label{sec:introduction}
-% Apresente a pergunta de pesquisa e por que ela importa.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-in culpa qui officia deserunt mollit anim id est laborum.
+A bank that lends money has to decide, for every applicant, whether the
+expected gain of a loan outweighs the risk that it will not be repaid. Credit
+scoring turns this decision into a supervised classification problem: from
+past clients whose outcome is known, estimate the probability that a new
+client will default. Two properties matter at the same time. The score has to
+\emph{rank} clients well, so that the riskiest applications are the first to
+be refused, and it has to be \emph{explainable}, because a refusal often must
+be justified to the client or to a regulator \citep{oku2026slides}.
 
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vestibulum
-id ligula porta felis euismod semper. Cras justo odio, dapibus ac facilisis in,
-egestas eget quam. Donec ullamcorper nulla non metus auctor fringilla. Aenean
-lacinia bibendum nulla sed consectetur. Nullam quis risus eget urna mollis
-ornare vel eu leo. Maecenas faucibus mollis interdum. Integer posuere erat a
-ante venenatis dapibus posuere velit aliquet.
+This work uses the public \emph{Give Me Some Credit} dataset
+\citep{kaggle2011givemesomecredit} to answer one question: \emph{given a
+client's credit history, what is the probability of a serious delinquency
+(90 days or more past due) within the next two years?} We compare two methods
+from the course that sit at opposite ends of the interpretability--flexibility
+trade-off: a regularized logistic regression, whose coefficients read directly
+as odds ratios, and a random forest \citep{breiman2001random}, which captures
+non-linear effects and interactions without hand-made features. Rather than
+only reporting the better score, we measure how much ranking power is given up
+by choosing the explainable model.
+
+A second aim is methodological. The data contain impossible values,
+informative missing values and a positive class of only 6.7\%, three common
+ways of reporting a result that is better than reality. The analysis was
+therefore built around the evaluation practices of the course: a test set that
+is opened once, every data-dependent step fitted inside cross-validation, and
+metrics that a constant prediction cannot game.

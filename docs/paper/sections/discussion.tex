@@ -1,14 +1,47 @@
 \section{Discussion}
 \label{sec:discussion}
-% Interprete os resultados e discuta as limitações do método.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat
-a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam,
-pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id
-nibh ultricies vehicula ut id elit. Maecenas faucibus mollis interdum. Cras
-justo odio, dapibus ac facilisis in, egestas eget quam. Donec sed odio dui.
+\paragraph{How much does interpretability cost?} Very little on this dataset.
+The random forest is ahead by 0.008 of AUC, a gap that is consistent across
+folds and on the test set but small next to the 0.36 that separates either
+model from the baseline. At a fixed recall of 70\% it means 14\% fewer good
+payers refused, which may or may not justify a model whose refusals are harder
+to explain. This is the setup described in the course for credit: a flexible
+model for accuracy and a logistic regression as the explainable reference
+\citep{oku2026slides}. The binning experiment suggests where the gap comes
+from. Giving the linear model non-linear curves per feature recovered only
+0.003 of AUC, so most of the forest's advantage comes from interactions between
+features, which a logistic regression only captures if they are created by
+hand.
 
-Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\paragraph{Why regularization did not help.} With 120{,}000 training clients
+and 14 coefficients, each coefficient is estimated from thousands of examples
+and its variance is already small. A penalty can only add bias, which is what
+Figure~\ref{fig:regularization} shows. Ridge and lasso earn their place when
+there are few rows, many columns or near-collinear columns
+\citep{oku2026slides,james2021islr}, none of which describes this table. The
+same figure shows why model selection used the log-loss: a strong ridge
+penalty kept the ranking (AUC 0.847) while producing probabilities worse
+than a constant, a failure that the AUC cannot see.
+
+\paragraph{Why the data cleaning mattered.} Treating the 96/98 codes as counts,
+or simply imputing the missing incomes, would have hidden two signals: 269
+clients with a 55\% default rate, and a missing-income group that defaults
+less than average. Encoding both as flags, and keeping every learned step
+inside the cross-validation folds, is also why the cross-validated and test
+scores agree to within 0.007.
+
+\paragraph{Limitations.} The coefficients describe associations conditional on
+the other features, not causes; the three late-payment counts are strongly
+correlated, so their individual odds ratios share the weight between them, and
+impurity-based importances are unsigned and favour features with many distinct
+values. The decision threshold follows an illustrative recall target, not the
+real costs of each error, and the calibration of the probabilities was not
+examined. The dataset has no dates, so a split by time, the realistic test for
+a credit model, was not possible; it also contains 609 duplicated rows that may
+place the same client on both sides of a split. Only the leaf size of the
+forest was tuned, and gradient-boosted trees \citep{chen2016xgboost}, the
+usual choice for tabular credit data, were not tried. Finally, age is one of
+the strongest predictors, with younger clients scored as riskier. Whether a
+lender may use it is a legal and ethical question that the model cannot
+answer, and a reminder that a model can learn and reproduce a prejudice
+present in its data \citep{oku2026slides}.

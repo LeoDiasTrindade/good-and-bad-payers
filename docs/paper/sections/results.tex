@@ -1,14 +1,128 @@
 \section{Results}
 \label{sec:results}
-% Apresente seus resultados. Figuras e tabelas devem ter legenda e \label.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo
-cursus magna, vel scelerisque nisl consectetur et. Donec id elit non mi porta
-gravida at eget metus. Sed posuere consectetur est at lobortis. Curabitur
-blandit tempus porttitor. Aenean lacinia bibendum nulla sed consectetur.
-Maecenas sed diam eget risus varius blandit sit amet non magna. Nullam quis
-risus eget urna mollis ornare vel eu leo.
+Table~\ref{tab:results} collects every model that was evaluated. Cross-validated
+scores (mean over the five folds) guided all choices; test scores were computed
+once, for the baseline and the two final models only.
 
-Etiam porta sem malesuada magna mollis euismod. Vestibulum id ligula porta
-felis euismod semper. Duis mollis, est non commodo luctus, nisi erat porttitor
-ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet
-fermentum. Donec ullamcorper nulla non metus auctor fringilla.
+\begin{table}[ht]
+  \centering
+  \small
+  \caption{Cross-validated (training set, 5 folds) and test-set scores. AUC:
+  higher is better; log-loss: lower is better. Only the three final models were
+  evaluated on the test set.}
+  \label{tab:results}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    & \multicolumn{2}{c}{5-fold CV} & \multicolumn{2}{c}{Test set} \\
+    \cmidrule(lr){2-3}\cmidrule(l){4-5}
+    Model & AUC (mean $\pm$ sd) & Log-loss & AUC & Log-loss \\
+    \midrule
+    Baseline (constant 6.7\%)                & $0.500 \pm 0.000$ & 0.245 & 0.500 & 0.245 \\
+    Logistic regression, raw features        & $0.851 \pm 0.004$ & 0.188 & --    & --    \\
+    Logistic regression, $\log(1+x)$, ridge $C{=}10$ & $0.852 \pm 0.005$ & 0.185 & 0.858 & 0.183 \\
+    Logistic regression, binned (experiment) & $0.855 \pm 0.005$ & 0.183 & --    & --    \\
+    Random forest, min.\ leaf 20             & $0.863 \pm 0.003$ & 0.179 & 0.866 & 0.177 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Logistic regression.} The log transform of the long-tailed features
+improved the cross-validated AUC slightly (0.851 to 0.852) and the log-loss
+more clearly (0.188 to 0.185). Figure~\ref{fig:regularization} shows the
+penalty path. For $C \geq 0.1$, ridge and lasso give the same scores, and the
+selected model ($C = 10$, ridge) is in practice unpenalized. Only strong
+penalties change anything, and they hurt: at $C = 10^{-4}$ the lasso keeps at
+most one of the 14 coefficients and falls to the baseline, while the ridge
+still ranks clients well (AUC 0.847) but its log-loss, 0.286, is worse than
+the constant baseline, because all probabilities are squeezed toward the same
+value. A logistic regression on 20 quantile bins of the five continuous
+features, an attempt to capture the non-linear curves of
+Figure~\ref{fig:eda}, gained only 0.003 of AUC, less than one standard
+deviation across folds, and was not kept.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{fig_regularizacao}
+  \caption{Logistic regression: cross-validated AUC (a) and log-loss (b)
+  against the inverse penalty $C$ for ridge and lasso. The dotted line marks
+  the selected $C$; the dashed line in (b) is the constant baseline.}
+  \label{fig:regularization}
+\end{figure}
+
+\paragraph{Random forest.} Figure~\ref{fig:forest} shows the bias--variance
+trade-off controlled by the minimum leaf size. With leaves of one client, the
+trees memorize the training folds (training AUC 1.000) and the validation AUC
+is the worst of the grid (0.843). Larger leaves make each tree simpler: the
+training score falls and the validation score rises until about 20--50
+clients per leaf, then starts to fall again. The selected leaf size (20,
+lowest validation log-loss) gives a cross-validated AUC of 0.863.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{fig_floresta}
+  \caption{Random forest: AUC (a) and log-loss (b) on the training and
+  validation folds as the minimum leaf size grows. The dotted line marks the
+  selected value.}
+  \label{fig:forest}
+\end{figure}
+
+\paragraph{Test set.} On the 30{,}000 test clients the logistic regression
+reaches an AUC of 0.858 and the random forest 0.866
+(Figure~\ref{fig:roc}), both within 0.007 of their cross-validated values. Over
+most of the ROC curve the two models are almost indistinguishable; the forest
+is ahead mainly between 10\% and 40\% of false positives. With the default
+threshold of 0.5, both models beat the constant model's accuracy by less than
+half a percentage point (93.7\% against 93.3\%), which is why accuracy was not
+used.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.42\linewidth]{fig_roc}
+  \caption{ROC curves of the two final models on the test set.}
+  \label{fig:roc}
+\end{figure}
+
+\paragraph{Decision threshold.} The thresholds chosen on the out-of-fold
+training predictions to reach a recall of 0.70 were 0.079 for the logistic
+regression and 0.101 for the forest. Applied unchanged to the test set
+(Table~\ref{tab:threshold}), both still catch about 70\% of defaulters, so the
+choice generalized. For the same recall, the forest refuses 641 fewer good
+payers (3{,}949 against 4{,}590 false positives, 14\% fewer), which is how its
+higher AUC translates into a business decision.
+
+\begin{table}[ht]
+  \centering
+  \small
+  \caption{Test-set confusion counts at the threshold chosen by
+  cross-validation (recall $\geq 0.70$ on out-of-fold predictions). Positive =
+  default.}
+  \label{tab:threshold}
+  \begin{tabular}{@{}lccccccc@{}}
+    \toprule
+    Model & Threshold & TP & FN & FP & TN & Precision & Recall \\
+    \midrule
+    Logistic regression & 0.079 & 1{,}421 & 584 & 4{,}590 & 23{,}405 & 0.236 & 0.709 \\
+    Random forest       & 0.101 & 1{,}413 & 592 & 3{,}949 & 24{,}046 & 0.264 & 0.705 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{What drives the predictions.} Figure~\ref{fig:interpretation}
+compares the logistic regression's odds ratios with the forest's impurity-based
+importances. Both models rely on the same four features: the three
+late-payment counts and revolving utilization. In the logistic regression, one
+standard deviation more of (log) revolving utilization multiplies the odds of
+default by 1.97, and one more standard deviation of age by 0.79. The flags
+built during the exploratory analysis carry signal: the 96/98 code flag
+multiplies the odds by 12.6 and the revolving-above-400\% flag by 2.8. The
+forest ranks these flags low, since each one affects few clients.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{fig_interpretacao}
+  \caption{(a) Odds ratios $e^{\beta_j}$ of the logistic regression, per
+  standard deviation for numerical features and for a flag switched on;
+  values above 1 raise the risk. (b) Mean decrease in Gini impurity in the
+  random forest (unsigned).}
+  \label{fig:interpretation}
+\end{figure}
