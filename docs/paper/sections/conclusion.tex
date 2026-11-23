@@ -1,9 +1,14 @@
 \section{Conclusion}
 \label{sec:conclusion}
-% Sintetize as conclusões sustentadas pelos resultados.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo
-cursus magna, vel scelerisque nisl consectetur et. Cras mattis consectetur
-purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur. Donec
-ullamcorper nulla non metus auctor fringilla. Integer posuere erat a ante
-venenatis dapibus posuere velit aliquet. Nulla vitae elit libero, a pharetra
-augue. Curabitur blandit tempus porttitor.
+We estimated the probability of a serious credit delinquency within two years
+for the 150{,}000 labelled clients of the \emph{Give Me Some Credit} dataset.
+A careful exploratory analysis turned impossible values, special codes and
+informative missing values into explicit rules and flags, and every learned
+step was fitted inside cross-validation, with the test set opened once. On
+that test set a regularized logistic regression reached an AUC of 0.858 and a
+random forest 0.866. The explainable model gives up little ranking power,
+previous late payments and revolving utilization dominate both models, and
+regularization was unnecessary with this many rows per coefficient. The next
+steps are gradient-boosted trees, a threshold derived from the costs of each
+error, a check of probability calibration, and an explicit discussion of
+whether age should enter a credit decision.

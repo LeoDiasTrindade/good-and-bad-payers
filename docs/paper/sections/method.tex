@@ -1,21 +1,75 @@
 \section{Method}
 \label{sec:method}
-% Explique as técnicas utilizadas e justifique sua escolha.
-% Subseções sugeridas: ajuste ao conteúdo efetivo do trabalho.
+
 \subsection{Models}
 \label{sec:models}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
-eu fugiat nulla pariatur. Curabitur blandit tempus porttitor. Vestibulum id
-ligula porta felis euismod semper.
+\paragraph{Logistic regression.} The model gives the probability of default
+as $p(\mathbf{x}) = \sigma(\beta_0 + \mathbf{x}^\top\boldsymbol{\beta})$, with
+$\sigma(z) = 1/(1+e^{-z})$. The coefficients minimize the log-loss plus a
+penalty,
+\begin{equation}
+  \frac{1}{C}\,R(\boldsymbol{\beta})
+  - \sum_{i=1}^{n}\Big[y_i \ln p_i + (1-y_i)\ln(1-p_i)\Big],
+  \qquad
+  R(\boldsymbol{\beta}) = \tfrac{1}{2}\lVert\boldsymbol{\beta}\rVert_2^2
+  \ \text{(ridge)} \quad\text{or}\quad
+  \lVert\boldsymbol{\beta}\rVert_1 \ \text{(lasso)},
+  \label{eq:logloss}
+\end{equation}
+where $C = 1/\alpha$ is the inverse of the penalty strength, as in
+scikit-learn. The score $z$ is the log-odds, so increasing feature $j$ by one
+unit multiplies the odds of default by $e^{\beta_j}$, the odds ratio. We chose
+this model as the main method for three reasons covered in the course
+\citep{oku2026slides,james2021islr,izbicki2020aprendizado}: it outputs a probability that the bank
+turns into a decision with a threshold; each coefficient can be explained to a
+client or regulator; and it is the baseline that any more complex model has
+to beat.
+
+\paragraph{Random forest.} A decision tree splits the feature space with a
+sequence of yes/no questions and can represent non-linear effects and
+interactions, such as \emph{income only matters when there are late payments},
+without creating new columns. A single deep tree has high variance. A random
+forest \citep{breiman2001random,hastie2009esl} averages $B$ trees, each grown
+on a bootstrap sample of the rows and choosing each split among a random
+subset of $\sqrt{p}$ features, which decorrelates the trees and reduces the
+variance of the average. The predicted probability is the mean of the trees'
+leaf frequencies. We used $B = 300$ trees and tuned the minimum number of
+clients per leaf, which controls how far each tree can fit the training data.
+Trees are insensitive to monotone transformations, so this model receives
+neither the log transform nor standardization.
+
+\paragraph{Baseline.} A constant model that predicts the training default rate
+(6.7\%) for everybody. It has an AUC of 0.5 and sets the reference log-loss.
 
 \subsection{Evaluation protocol}
 \label{sec:evaluation}
-Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec
-ullamcorper nulla non metus auctor fringilla. Maecenas faucibus mollis interdum.
-Nulla vitae elit libero, a pharetra augue. Fusce dapibus, tellus ac cursus
-commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet
-risus. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Sed posuere
-consectetur est at lobortis.
+The labelled data were split once into a training set (80\%, 120{,}000
+clients) and a test set (20\%, 30{,}000 clients), stratified by the target.
+The test set was used only at the very end, once. Every choice was made with
+stratified 5-fold cross-validation on the training set: whether to apply the
+log transform, the penalty type (ridge or lasso) and $C \in \{10^{-4}, \dots,
+10^{2}\}$ for the logistic regression, the minimum leaf size
+$\in\{1, 5, 20, 50, 100, 200\}$ for the forest, and the decision threshold.
+Stratification keeps the 6.7\% default rate in every fold, so that fold scores
+are comparable \citep{oku2026slides}.
+
+Accuracy is not used: the constant \emph{everyone repays} model already scores
+93.3\%. We report two metrics instead. The \emph{log-loss}
+(Equation~\ref{eq:logloss} without the penalty, averaged) scores the
+probability given to what actually happened; it is the criterion used to
+select hyperparameters (lowest mean cross-validated value). The \emph{area
+under the ROC curve} (AUC) is the probability that a randomly chosen defaulter
+receives a higher score than a randomly chosen good payer. It does not depend
+on a threshold, matches the competition metric, and is our headline number.
+
+A probability is not yet a decision. The threshold was chosen on out-of-fold
+predictions of the training set (each client scored by a model that did not
+see it), using an illustrative business rule: the highest threshold that still
+catches at least 70\% of defaulters (recall $\geq 0.70$). The chosen threshold
+was then applied, unchanged, to the test set.
+
+All code is in Python~3.13 with scikit-learn~1.9 \citep{pedregosa2011scikit},
+in three files of the project repository: the notebook \texttt{01\_eda}
+(exploration), the notebook \texttt{02\_modelagem} (models and figures) and
+the module \texttt{preprocessamento.py} (the cleaning rules shared by both). A
+fixed random seed makes every number in this paper reproducible.
