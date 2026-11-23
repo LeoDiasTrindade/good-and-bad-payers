@@ -1,0 +1,27 @@
+<section id="method">
+<div class="head">
+<p class="eyebrow">METHOD</p>
+<h2>Two models, one protocol</h2>
+</div>
+<div class="cols">
+<div class="card card-blue">
+<h3>Logistic regression</h3>
+<p class="small">p = σ(β₀ + xᵀβ), fitted on the log-loss. Each e^β is an odds ratio, so a refusal can be explained.</p>
+<p class="small">log(1 + x) on long tails, standardized, ridge or lasso.</p>
+<p class="tag">Main method · Lectures 9 and 11</p>
+</div>
+<div class="card card-orange">
+<h3>Random forest</h3>
+<p class="small">300 trees on bootstrap samples, √p features per split. Finds non-linear effects and interactions by itself.</p>
+<p class="small">Tuned: minimum number of clients per leaf.</p>
+<p class="tag">Comparison · Lecture of 13/11</p>
+</div>
+</div>
+<div class="steps">
+<div class="step"><p class="step-n">1 · Split</p><p class="small">80/20, stratified. The test set stays locked.</p></div>
+<div class="step"><p class="step-n">2 · Choose</p><p class="small">5-fold stratified CV for every choice.</p></div>
+<div class="step"><p class="step-n">3 · No leakage</p><p class="small">Everything that learns sits inside the pipeline.</p></div>
+<div class="step"><p class="step-n">4 · Grade</p><p class="small">Pick by log-loss, report AUC, open the test once.</p></div>
+</div>
+<aside>I chose two models from opposite ends of a trade-off that Lecture 9 described for credit. The logistic regression is the main method: it gives a probability, and every coefficient is an odds ratio, so the bank can explain a refusal. The random forest is the comparison: it finds non-linear effects and interactions on its own, but is harder to explain. Both go through the same protocol: a stratified 80-20 split with the test locked away, five-fold cross-validation for every choice, every step that learns inside the pipeline so nothing leaks, and the test opened only once.</aside>
+</section>

@@ -1,0 +1,15 @@
+<section id="tried">
+<div class="head">
+<p class="eyebrow">WHAT I TRIED</p>
+<h2>Experiments, and what each one taught me</h2>
+</div>
+<table class="tbl">
+<tr><th style="width:31%">Experiment</th><th style="width:31%">Result (5-fold CV)</th><th style="width:38%">Lesson</th></tr>
+<tr><td>log(1 + x) on long-tailed features</td><td>AUC 0.851 → 0.852</td><td>Small gain: the model is linear in β, not in x</td></tr>
+<tr><td>Ridge vs lasso, C from 10⁻⁴ to 10²</td><td>No gain. Strong ridge: AUC 0.847, log-loss worse than baseline</td><td>n ≫ p: nothing to shrink. Choose by log-loss, not AUC</td></tr>
+<tr><td>20 quantile bins on continuous features</td><td>+0.003 AUC</td><td>Not worth it: the forest’s edge is interactions</td></tr>
+<tr><td>Weighted sum of the 3 late counts</td><td>Highest correlation with target (0.36)</td><td>Exact linear combination of existing columns: dropped</td></tr>
+<tr><td>Forest with 1-client leaves</td><td>Train AUC 1.000, validation 0.843</td><td>Overfitting. Leaves of 20 or more: 0.863</td></tr>
+</table>
+<aside>What I tried. The log transform helped a little. Regularization did nothing: with 120 thousand rows and 14 coefficients there is nothing to shrink. And a very strong ridge still ranked clients well but gave probabilities worse than a constant, which is why I select by log-loss and not by AUC. Binning the continuous features gained only 0.003. A weighted sum of the late counts looked great by correlation, but it is an exact linear combination of columns I already had, so I dropped it. And a forest with one-client leaves memorized the training set: train AUC of 1, validation of 0.84.</aside>
+</section>

@@ -1,0 +1,27 @@
+<section id="eda">
+<div class="head">
+<p class="eyebrow">EXPLORATORY ANALYSIS</p>
+<h2>What the data was hiding</h2>
+</div>
+<div class="cols">
+<div class="chart-block">
+<p class="small"><b>Default rate</b> by times 30–59 days late<br>(all clients: 6.7%)</p>
+<div class="chart">
+<div class="bar-col"><p class="bar-value">4%</p><div class="bar" style="height:32px"></div></div>
+<div class="bar-col"><p class="bar-value">15%</p><div class="bar" style="height:119px"></div></div>
+<div class="bar-col"><p class="bar-value">27%</p><div class="bar" style="height:212px"></div></div>
+<div class="bar-col"><p class="bar-value">35%</p><div class="bar" style="height:280px"></div></div>
+<div class="bar-col"><p class="bar-value">44%</p><div class="bar" style="height:348px"></div></div>
+<div class="bar-col"><p class="bar-value">46%</p><div class="bar" style="height:364px"></div></div>
+</div>
+<div class="axis"><p>0</p><p>1</p><p>2</p><p>3</p><p>4</p><p>5+</p></div>
+</div>
+<div class="findings">
+<div class="finding"><h3>Codes 96 and 98 in the late counts</h3><p class="small">269 clients, always in all three columns, 55% default. Not counts: a signal of its own.</p></div>
+<div class="finding"><h3>A debt ratio without income</h3><p class="small">When income is missing, the median “ratio” is 1,159 (vs 0.30): an absolute debt.</p></div>
+<div class="finding"><h3>Missing income is not more risk</h3><p class="small">Clients without income default less: 5.6% vs 6.9%.</p></div>
+<p class="small"><b>Fix:</b> row-wise rules plus 4 flags, then impute inside the pipeline.</p>
+</div>
+</div>
+<aside>Before modelling, the exploratory analysis. Past late payments are the strongest signal: the default rate goes from 4 percent with none to over 40 percent with four or more. But the data also hid three traps. The late-payment counts jump to codes 96 and 98: 269 clients, with 55 percent default, so not counts at all. When income is missing, the debt ratio is in the thousands, so it is not a ratio. And clients without income default less, not more. I turned these into explicit rules and four flags instead of just imputing them away.</aside>
+</section>

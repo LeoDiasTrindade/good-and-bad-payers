@@ -1,0 +1,30 @@
+<section id="drivers">
+<div class="head">
+<p class="eyebrow">INTERPRETATION</p>
+<h2>What drives the risk</h2>
+</div>
+<div class="cols">
+<div class="rank">
+<h3>Logistic regression · odds ratio e^β</h3>
+<div class="rank-row"><p class="rank-name">Codes 96/98 flag</p><div class="rank-track"><div class="rank-bar-blue" style="width:200px"></div></div><p class="rank-val">×12.6</p></div>
+<div class="rank-row"><p class="rank-name">Revolving &gt; 400% flag</p><div class="rank-track"><div class="rank-bar-blue" style="width:82px"></div></div><p class="rank-val">×2.8</p></div>
+<div class="rank-row"><p class="rank-name">Revolving utilization</p><div class="rank-track"><div class="rank-bar-blue" style="width:54px"></div></div><p class="rank-val">×1.97 per SD</p></div>
+<div class="rank-row"><p class="rank-name">Times 30–59 late</p><div class="rank-track"><div class="rank-bar-blue" style="width:27px"></div></div><p class="rank-val">×1.40 per SD</p></div>
+<div class="rank-row"><p class="rank-name">Times 90+ late</p><div class="rank-track"><div class="rank-bar-blue" style="width:26px"></div></div><p class="rank-val">×1.39 per SD</p></div>
+<div class="rank-row"><p class="rank-name">Times 60–89 late</p><div class="rank-track"><div class="rank-bar-blue" style="width:16px"></div></div><p class="rank-val">×1.22 per SD</p></div>
+<div class="rank-row"><p class="rank-name">Age</p><div class="rank-track"><div class="rank-bar-muted" style="width:19px"></div></div><p class="rank-val">×0.79 · lower risk</p></div>
+</div>
+<div class="rank">
+<h3>Random forest · impurity importance</h3>
+<div class="rank-row"><p class="rank-name">Times 90+ late</p><div class="rank-track"><div class="rank-bar-orange" style="width:200px"></div></div><p class="rank-val">0.27</p></div>
+<div class="rank-row"><p class="rank-name">Revolving utilization</p><div class="rank-track"><div class="rank-bar-orange" style="width:161px"></div></div><p class="rank-val">0.22</p></div>
+<div class="rank-row"><p class="rank-name">Times 60–89 late</p><div class="rank-track"><div class="rank-bar-orange" style="width:101px"></div></div><p class="rank-val">0.14</p></div>
+<div class="rank-row"><p class="rank-name">Times 30–59 late</p><div class="rank-track"><div class="rank-bar-orange" style="width:88px"></div></div><p class="rank-val">0.12</p></div>
+<div class="rank-row"><p class="rank-name">Debt ratio</p><div class="rank-track"><div class="rank-bar-orange" style="width:46px"></div></div><p class="rank-val">0.06</p></div>
+<div class="rank-row"><p class="rank-name">Age</p><div class="rank-track"><div class="rank-bar-orange" style="width:43px"></div></div><p class="rank-val">0.06</p></div>
+<div class="rank-row"><p class="rank-name">Monthly income</p><div class="rank-track"><div class="rank-bar-orange" style="width:38px"></div></div><p class="rank-val">0.05</p></div>
+</div>
+</div>
+<p class="callout">Both models agree: <b>past late payments</b> and <b>revolving utilization</b> dominate. The EDA flags carry real signal. Age lowers the risk, which raises a fairness question.</p>
+<aside>What drives the predictions? Both models agree on the same four features: the three late-payment counts and how much of the credit limit the client uses. In the logistic regression, the flag for codes 96 and 98 multiplies the odds of default by more than twelve, so the cleaning work paid off. Age goes the other way: older clients are scored as safer. That is useful for prediction, but whether a bank may use age is a fairness question, the one Lecture 9 raised about models learning a prejudice.</aside>
+</section>
