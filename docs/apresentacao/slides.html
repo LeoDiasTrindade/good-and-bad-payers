@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good and Bad Payers — Lightning Talk</title>
+
+<style>
+/* Identidade visual UFABC sobre fundo preto (Manual de Identidade Visual, 2018):
+   detalhes no verde Pantone 349C #006633 e no amarelo Pantone 116C #FFCC00,
+   marca na versão monocromática branca (p. 14), tipografia Verdana.
+   Os gráficos seguem o tema padrão do seaborn; as caixas usam contorno tracejado branco. */
+section {
+  --black: #0D0D0D;
+  --green: #006633;
+  --yellow: #FFCC00;
+  --white: #FFFFFF;
+  --text: #D9D9D9;
+  --muted: #A6A6A6;
+  --dash: #F2F2F2;
+  font-family: Verdana, Geneva, sans-serif;
+  background: var(--black);
+  color: var(--text);
+  padding: 96px 128px 168px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+h1, h2, h3 { font-family: Verdana, Geneva, sans-serif; color: var(--white); }
+h1 { font-size: 88px; font-weight: 400; line-height: 1.1; }
+h2 { font-size: 56px; font-weight: 400; line-height: 1.15; }
+h3 { font-size: 28px; font-weight: 700; line-height: 1.25; }
+p { font-size: 28px; line-height: 1.4; }
+li { font-size: 28px; line-height: 1.4; }
+
+/* Título: rótulo amarelo e título branco que diz a conclusão */
+.head { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--yellow); }
+
+/* Rodapé: marca UFABC, fio branco e número do slide em branco */
+.foot { position: absolute; left: 128px; bottom: 64px; width: 1664px; height: 48px; display: flex; align-items: center; gap: 24px; }
+.foot img { width: 138px; height: 44px; object-fit: contain; }
+.foot-line { flex: 1; height: 2px; background: var(--white); }
+.foot-n { font-size: 24px; font-weight: 700; color: var(--white); }
+
+.small { font-size: 24px; line-height: 1.4; }
+.spacer { flex: 1; }
+.lead { color: var(--white); }
+.link { font-size: 26px; color: var(--muted); }
+.link a { color: var(--yellow); }
+.hl { color: var(--yellow); }
+
+/* Capa: a ilustração tem fundo transparente */
+.cover { padding: 128px; gap: 0; }
+.cover-art { position: absolute; right: 48px; top: 340px; width: 820px; height: 542px; object-fit: contain; }
+.cover-logo { width: 302px; height: 96px; object-fit: contain; object-position: left center; }
+.cover-main { width: 760px; display: flex; flex-direction: column; gap: 28px; }
+.subtitle { font-size: 32px; line-height: 1.35; color: var(--muted); }
+.byline { display: flex; flex-direction: column; gap: 6px; }
+.by-row { display: flex; gap: 56px; }
+.by-name { font-size: 28px; line-height: 1.4; color: var(--white); }
+.by-prof { font-size: 28px; line-height: 1.4; color: var(--text); }
+.by-course { font-size: 36px; line-height: 1.35; color: var(--white); margin-top: 10px; }
+
+/* Caixas: só contorno tracejado branco */
+.cols { display: flex; gap: 40px; }
+.facts { display: flex; flex-direction: column; gap: 10px; }
+.stat-block { width: 520px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.stat { font-size: 120px; line-height: 1; color: var(--yellow); }
+.callout { font-size: 28px; line-height: 1.4; color: var(--text); border: 2px dashed var(--dash); border-radius: 12px; padding: 22px 32px; }
+
+/* Método: dois modelos em colunas e o protocolo em tópicos */
+.card { flex: 1; border: 2px dashed var(--dash); border-radius: 12px; padding: 26px 30px; display: flex; flex-direction: column; gap: 12px; }
+.card .tag { font-size: 24px; font-weight: 700; color: var(--muted); }
+.card-list { display: flex; flex-direction: column; gap: 6px; margin: 0; padding-left: 32px; }
+.card-list li { font-size: 24px; line-height: 1.4; }
+.proto { display: flex; flex-direction: column; gap: 12px; }
+.proto-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding-left: 36px; }
+.proto-list b { color: var(--white); }
+
+/* Desafios da EDA: linhas numeradas em grade */
+.traps { display: flex; flex-direction: column; }
+.trap { display: grid; grid-template-columns: 64px 300px 1fr 440px; gap: 32px; padding: 16px 0; border-bottom: 1px solid #333333; align-items: start; }
+.trap-th { padding: 0 0 12px; }
+.trap-th p { font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--yellow); }
+.trap-n { font-size: 28px; font-weight: 700; color: var(--yellow); }
+.trap-t { font-size: 26px; font-weight: 700; line-height: 1.35; color: var(--white); }
+.trap-f { font-size: 24px; line-height: 1.4; color: var(--text); }
+.trap-d { font-size: 24px; line-height: 1.4; color: var(--white); }
+
+/* Tabelas */
+.tbl { font-size: 24px; color: var(--text); width: 1664px; }
+.tbl-sm { font-size: 24px; color: var(--text); }
+.tbl th, .tbl-sm th { color: var(--yellow); }
+.tbl-sm .num { text-align: right; }
+
+/* Gráficos do notebook (tema padrão do seaborn) */
+.fig-wide { width: 1664px; object-fit: contain; border-radius: 8px; }
+.fig-roc { width: 600px; height: 600px; object-fit: contain; border-radius: 8px; }
+.res-text { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+
+/* Encerramento: lista em uma coluna e agradecimento */
+.list { display: flex; flex-direction: column; gap: 32px; margin: 0; padding-left: 36px; }
+.list b { color: var(--white); }
+.thanks { font-size: 56px; line-height: 1.15; color: var(--white); }
+
+/* ---- viewer (only in this standalone file) ---- */
+html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; }
+#stage > section { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; isolation: isolate; }
+#stage > section:not(.active) { display: none; }
+#stage h1, #stage h2, #stage h3, #stage p { margin: 0; }
+#stage aside { display: none; }
+.tbl, .tbl-sm { border-collapse: collapse; }
+.tbl th, .tbl td, .tbl-sm th, .tbl-sm td { text-align: left; vertical-align: top; padding: 10px 16px; border-bottom: 1px solid #333333; }
+.tbl th, .tbl-sm th { font-weight: 700; }
+#counter { position: fixed; right: 16px; bottom: 10px; font: 14px Arial, sans-serif; color: #8A90A0; }
+#notes { position: fixed; left: 0; right: 0; bottom: 0; max-height: 40%; overflow: auto; display: none;
+          background: rgba(14,20,36,.95); color: #E8EAF0; font: 20px/1.45 Arial, sans-serif; padding: 18px 28px; }
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  #stage { position: static; transform: none !important; width: 1920px; height: auto; }
+  #stage > section { position: relative; display: flex !important; break-after: page; }
+  #counter, #notes { display: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="stage">
+<section id="cover" class="cover" data-transition="fade">
+<img class="cover-art" src="deck/assets/capa-multidao.png" alt="Isometric illustration of a crowd of borrowers on a platform, a few of them highlighted in red">
+<img class="cover-logo" src="deck/assets/ufabc-branco-lateral.png" alt="UFABC">
+<div class="spacer"></div>
+<div class="cover-main">
+<h1 style="width:1103px;color:#ffcc00;transform:translate(0, -45px);box-sizing:border-box">Good and bad payers</h1>
+<p class="subtitle" style="transform:translate(4px, -34px)">Predicting credit delinquency</p>
+</div>
+<div class="spacer"></div>
+<div class="byline">
+<div class="by-row"><p class="by-name" style="color:#a6a6a6">Leonardo Dias Trindade da Silva</p></div>
+<p class="by-prof" style="color:#a6a6a6">Professor Dr. Amanda Yumi Ambriola Oku</p>
+<p class="by-course" style="font-size:39px" data-fit="grow">Machine Learning · Final project</p>
+</div>
+<aside>Hi, I’m Leonardo. My project asks the question every lender asks before granting credit: what is the probability that this person will be ninety days or more past due in the next two years? In five minutes I’ll show what I chose, what the data was hiding, what I tried, what I found, and what I would do differently.</aside>
+</section>
+
+<section id="question">
+<div class="head">
+<h2 style="font-weight:400">Give Me Some Credit, a Kaggle competition</h2>
+</div>
+<div class="cols">
+<div class="facts" style="flex:1">
+<p class="lead" style="transform:translate(0, 29px)">Launched on Kaggle in 2011 with one goal <i>“improve on the state of the art in credit scoring by predicting the probability that somebody will experience financial distress in the next two years.”</i></p>
+<ul style="transform:translate(0, 124px)">
+<li><b>Data:</b> 150,000 past borrowers with a known outcome, plus 101,503 to score.</li>
+<li><b>10 features:</b> late payments, use of revolving credit, debt ratio, income, age, dependents, open and real-estate loans.</li>
+<li><b>Target:</b> serious delinquency, 90 or more days past due within two years.</li>
+<li><b>Metric:</b> AUC, the area under the ROC curve.</li>
+</ul>
+<p class="link" style="transform:translate(0, -192px)">Competition page <a href="https://www.kaggle.com/c/GiveMeSomeCredit">kaggle.com/c/GiveMeSomeCredit</a></p>
+</div>
+</div>
+<p class="callout" style="transform:translate(0, 124px)"><b>My question:</b> can we rank applicants by their risk, and how much ranking power does an explainable model give up?</p>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">02</p></div>
+<aside>The data comes from Give Me Some Credit, a Kaggle competition from 2011: 150 thousand past borrowers and ten features, such as late payments, use of revolving credit, debt ratio, income and age. The bad rate is 6.7 percent, about seven in every hundred borrowers. So accuracy is useless: calling everyone a good payer is already 93 percent accurate. I judge the models by AUC, how well they rank risk, and by log-loss. My question: how much ranking power does an explainable model give up?</aside>
+</section>
+
+<section id="eda">
+<div class="head">
+<h2>Late payments raise default risk over tenfold</h2>
+</div>
+<img class="fig-wide" src="deck/assets/slide_eda.png" alt="Default rate in the training set: rises from 4% with no late payment to about 45% with four or more; rises sharply in the top deciles of revolving use; falls with age; 5.6% for clients without income against 7% with income, and 55% for clients with codes 96 or 98" style="height:400px;transform:translate(0, 47px)">
+<p style="transform:translate(0, 98px)">Past late payments and heavy use of revolving credit raise the risk sharply, and older clients default less. Panel (d) shows the flags I created in the EDA: they carry signal of their own.</p>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">03</p></div>
+<aside>First, what the training data shows. Past late payments are the strongest signal: the bad rate goes from 4 percent with none to over 40 percent with four or more, more than tenfold. Heavy use of revolving credit raises the risk sharply in the top deciles, and older clients default less. The last panel shows two flags I created: clients without income default slightly less, and clients with codes 96 or 98 default more than half the time.</aside>
+</section>
+
+<section id="challenges">
+<div class="head">
+<h2>Six data traps, each fixed before modelling</h2>
+</div>
+<div class="traps">
+<div class="trap trap-th" style="transform:translate(-5px, 57px)"><p></p><p style="color:#ffffff">CHALLENGE</p><p style="color:#ffffff">WHAT I FOUND</p><p style="color:#ffffff">WHAT I DID</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">01</p><p class="trap-t">Impossible values</p><p class="trap-f">Age 0 (1 client); revolving use up to 50,708× the credit limit (264 clients above 4×)</p><p class="trap-d">Set to missing; a flag for revolving above 400%</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">02</p><p class="trap-t">Codes posing as counts</p><p class="trap-f">Late counts jump from ≤17 to 96 and 98: 269 clients, all three columns, 55% default</p><p class="trap-d">Set to missing; one flag for the codes</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">03</p><p class="trap-t">A ratio without its denominator</p><p class="trap-f">Income missing for 29,731 clients (20%); their median debt ratio is 1,159 vs 0.30</p><p class="trap-d">Debt ratio set to missing when income is</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">04</p><p class="trap-t">Missing values that inform</p><p class="trap-f">No income: 5.6% default vs 6.9%; dependents are missing only when income is</p><p class="trap-d">Flags, instead of imputing the signal away</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">05</p><p class="trap-t">Long tails</p><p class="trap-f">Skewness of 127 (income) and 81 (debt ratio)</p><p class="trap-d">log(1 + x) for the logistic regression</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">06</p><p class="trap-t">A leak in my own EDA</p><p class="trap-f">I first imputed medians using all rows, test rows included</p><p class="trap-d">Every step that learns moved inside the pipeline</p></div>
+</div>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">04</p></div>
+<aside>Those flags came from traps in the data. Impossible values, like an age of zero. Codes 96 and 98 posing as late-payment counts. A debt ratio computed without income. Missing values that carry signal. Long tails. And a leak in my own first notebook, which imputed medians using all rows, test rows included. Each trap became a fixed rule in a shared module, and every step that learns moved inside the pipeline.</aside>
+</section>
+
+<section id="method">
+<div class="head">
+<p class="eyebrow">METHOD</p>
+<h2>Both models follow one leak-free protocol</h2>
+</div>
+<div class="cols">
+<div class="card">
+<h3>Logistic regression</h3>
+<ul class="card-list">
+<li>p = σ(β₀ + xᵀβ), fitted on the log-loss</li>
+<li>Each e^β is an odds ratio, so a refusal can be explained</li>
+<li>log(1 + x) on long tails, standardized, ridge or lasso</li>
+</ul>
+</div>
+<div class="card">
+<h3>Random forest</h3>
+<ul class="card-list">
+<li>300 trees on bootstrap samples, √p features per split</li>
+<li>Finds non-linear effects and interactions by itself</li>
+<li>Tuned: minimum number of clients per leaf</li>
+</ul>
+</div>
+</div>
+<div class="proto">
+<h3>The same protocol for both</h3>
+<ul class="proto-list" style="transform:translate(0, 28px)">
+<li><b>Split:</b> 80/20, stratified; the test set stays locked until the end.</li>
+<li><b>Choose:</b> 5-fold stratified cross-validation for every choice.</li>
+<li><b>No leakage:</b> everything that learns sits inside the pipeline.</li>
+<li><b>Grade:</b> pick by log-loss, report AUC, open the test set once.</li>
+</ul>
+</div>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">05</p></div>
+<aside>I compared two models from opposite ends of the trade-off discussed in Lecture 9. The logistic regression is the main method: every coefficient is an odds ratio, so a refusal can be explained to the client. The random forest finds non-linear effects and interactions on its own, but is harder to explain. Both follow the same protocol: a stratified 80/20 split with the test set locked away, five-fold cross-validation for every choice, and the test set opened only once, at the end.</aside>
+</section>
+
+<section id="logreg">
+<div class="head">
+<p class="eyebrow">LOGISTIC REGRESSION · TUNING</p>
+<h2>Regularization did not help</h2>
+</div>
+<img class="fig-wide" style="height:440px" src="deck/assets/slide_regularizacao.png" alt="Cross-validated AUC and log-loss of ridge and lasso against C: both are flat at AUC 0.852 and log-loss 0.185 for C of 0.1 or more; with strong penalties the lasso falls to AUC 0.5 and the ridge log-loss rises above the constant baseline">
+<p>With 120,000 rows and 14 coefficients there is nothing to shrink: ridge and lasso tie for C ≥ 0.1, and the chosen C = 10 is barely penalized. A strong ridge still ranks well (AUC 0.847) but its probabilities are worse than a constant, so I choose by log-loss. log(1 + x) helped a little (0.851 → 0.852); quantile bins added only 0.003.</p>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">06</p></div>
+<aside>For the logistic regression, I compared ridge and lasso over a grid of C. Regularization did not help: with 120 thousand rows and only 14 coefficients there is little to shrink, so the chosen C of 10 is barely penalized. One lesson from the left panel: a very strong ridge still ranks clients well, but on the right its probabilities are worse than a constant. That is why I choose by log-loss, not only by AUC.</aside>
+</section>
+
+<section id="forest">
+<div class="head">
+<p class="eyebrow">RANDOM FOREST · TUNING</p>
+<h2>Deep trees memorize the training set</h2>
+</div>
+<img class="fig-wide" style="height:440px" src="deck/assets/slide_floresta.png" alt="Random forest AUC and log-loss on training and validation folds against the minimum leaf size: with leaves of 1 client the training AUC is 1.000 and the validation AUC is the worst, 0.843; validation is best around 20 to 50 clients per leaf">
+<p>With leaves of 1 client the trees memorize the training folds (AUC 1.000) and validate worst (0.843): overfitting. Larger leaves trade variance for bias; 20 clients per leaf gives the lowest validation log-loss (AUC 0.863). The 300 trees and √p features per split were fixed, not tuned.</p>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">07</p></div>
+<aside>For the random forest, the key setting was the minimum number of clients per leaf. With one client per leaf, the trees memorize the training folds: a training AUC of 1, and the worst validation score. Larger leaves trade variance for bias, as in Lecture 6. Twenty clients per leaf gave the best validation log-loss.</aside>
+</section>
+
+<section id="results">
+<div class="head">
+<p class="eyebrow">RESULTS ON THE TEST SET, OPENED ONCE</p>
+<h2>The explainable model gives up only 0.008 AUC</h2>
+</div>
+<div class="cols">
+<img class="fig-roc" src="deck/assets/slide_roc.png" alt="ROC curves on the test set: random forest AUC 0.866 and logistic regression AUC 0.858 almost overlap, both far above the coin-flip diagonal">
+<div class="res-text">
+<p>On 30,000 clients never used for any choice, the forest reaches an AUC of 0.866 and the logistic regression 0.858 (Gini 0.73 and 0.72), close to their cross-validated scores: no sign of leakage.</p>
+<p>With a cut-off chosen in cross-validation to catch 70% of defaulters:</p>
+<table class="tbl-sm">
+<tr><th style="width:34%">Model</th><th class="num">Approved</th><th class="num">Bad rate of approved</th><th class="num">Good payers refused</th></tr>
+<tr><td>Logistic regression</td><td class="num">80.0%</td><td class="num">2.4%</td><td class="num">4,590</td></tr>
+<tr><td>Random forest</td><td class="num">82.1%</td><td class="num">2.4%</td><td class="num">3,949</td></tr>
+</table>
+<p>Approving four in five applicants cuts the bad rate from 6.7% to 2.4%. At the same bad rate, the forest approves <b>649 more customers</b>.</p>
+</div>
+</div>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">08</p></div>
+<aside>Only now did I open the test set. The forest reaches an AUC of 0.866 and the logistic regression 0.858, close to their cross-validated scores, so nothing leaked. The explainable model gives up only 0.008. In credit terms: with a cut-off that catches 70 percent of defaulters, the bank approves about four in five applicants, and the bad rate among those approved falls from 6.7 to 2.4 percent. At that same bad rate, the forest approves 649 more customers.</aside>
+</section>
+
+<section id="drivers">
+<div class="head">
+<p class="eyebrow">RISK DRIVERS</p>
+<h2>Late payments and revolving use drive the risk</h2>
+</div>
+<img class="fig-wide" style="height:560px" src="deck/assets/slide_interpretacao.png" alt="Left: odds ratios of the logistic regression, led by the codes 96/98 flag (12.6), the revolving above 400% flag (2.8) and revolving utilization (1.97); age is below 1 (0.79). Right: random forest importances, led by times 90+ days late, revolving utilization and the other late-payment counts">
+<p>Both models agree. The flag for codes 96/98 multiplies the odds by 12.6, so the cleaning paid off; age lowers the risk, a fairness question (Lecture 9).</p>
+<div class="foot"><img src="deck/assets/ufabc-branco-lateral.png" alt="UFABC"><div class="foot-line"></div><p class="foot-n">09</p></div>
+<aside>What drives the risk? Both models agree on late payments and revolving use. In the logistic regression, the flag for codes 96 and 98 multiplies the odds of default by more than twelve, so the cleaning work paid off. Age lowers the risk, which raises the fairness question from Lecture 9: should a credit model learn this?</aside>
+</section>
+
+<section id="next">
+<div class="head">
+<p class="eyebrow">LOOKING BACK</p>
+<h2>What I would do differently</h2>
+</div>
+<ul class="list" style="width:1657px;min-height:327px;transform:translate(7px, 61px);box-sizing:border-box;flex:0 0 auto">
+<li><b>Code the cleaning rules once, from day one.</b> My EDA imputed on all rows, a leak; a shared module fixed it.</li>
+<li><b>Set the cut-off from real costs.</b> 70% recall is illustrative; a bank weighs the loss on a default against the margin on a good customer.</li>
+<li><b>Try gradient boosting and check calibration.</b> The forest’s edge comes from interactions; boosting is the usual next step.</li>
+<li><b>Ask whether age belongs in the model</b> </li>
+</ul>
+<div class="spacer"></div>
+<p class="thanks">Thank you!</p>
+<aside>What would I do differently? Write the cleaning rules as code from day one. Set the cut-off from real costs: the loss on a default against the margin on a good customer. Try gradient boosting and check calibration. And discuss whether age belongs in a credit model at all. Thank you.</aside>
+</section>
+
+</div>
+<div id="counter"></div>
+<div id="notes"></div>
+<script>
+const stage = document.getElementById('stage');
+const slides = [...stage.querySelectorAll(':scope > section')];
+const counter = document.getElementById('counter'), notes = document.getElementById('notes');
+// Como no app Slides: elementos fixados antes do primeiro filho em fluxo ficam atrás do texto
+slides.forEach(s => {
+  for (const c of s.children) {
+    if (c.tagName === 'ASIDE') continue;
+    if (getComputedStyle(c).position === 'absolute') c.style.zIndex = '-1'; else break;
+  }
+});
+let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+function fit() { const s = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = `translate(-50%, -50%) scale(${s})`; }
+function show(n) {
+  i = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((s, k) => s.classList.toggle('active', k === i));
+  counter.textContent = `${i + 1} / ${slides.length}  ·  ←/→ navigate · N notes · F full screen`;
+  const a = slides[i].querySelector('aside'); notes.textContent = a ? a.textContent : '';
+  history.replaceState(null, '', '#' + (i + 1));
+}
+addEventListener('resize', fit);
+addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) show(i + 1);
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) show(i - 1);
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key.toLowerCase() === 'n') notes.style.display = notes.style.display === 'block' ? 'none' : 'block';
+  else if (e.key.toLowerCase() === 'f') (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
+});
+stage.addEventListener('click', () => show(i + 1));
+fit(); show(i);
+</script>
+</body>
+</html>

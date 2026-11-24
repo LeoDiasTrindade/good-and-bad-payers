@@ -1,0 +1,10 @@
+<section id="logreg">
+<div class="head">
+<p class="eyebrow">LOGISTIC REGRESSION · TUNING</p>
+<h2>Regularization did not help</h2>
+</div>
+<img class="fig-wide" style="height:440px" src="/_blob/77ae81f4825f69c284c7b2c40e70feeb" alt="Cross-validated AUC and log-loss of ridge and lasso against C: both are flat at AUC 0.852 and log-loss 0.185 for C of 0.1 or more; with strong penalties the lasso falls to AUC 0.5 and the ridge log-loss rises above the constant baseline">
+<p>With 120,000 rows and 14 coefficients there is nothing to shrink: ridge and lasso tie for C ≥ 0.1, and the chosen C = 10 is barely penalized. A strong ridge still ranks well (AUC 0.847) but its probabilities are worse than a constant, so I choose by log-loss. log(1 + x) helped a little (0.851 → 0.852); quantile bins added only 0.003.</p>
+<div class="foot"><img src="/_blob/60dbc063ab64cbb4bdc40264543da5bc" alt="UFABC"><div class="foot-line"></div><p class="foot-n">06</p></div>
+<aside>For the logistic regression, I compared ridge and lasso over a grid of C. Regularization did not help: with 120 thousand rows and only 14 coefficients there is little to shrink, so the chosen C of 10 is barely penalized. One lesson from the left panel: a very strong ridge still ranks clients well, but on the right its probabilities are worse than a constant. That is why I choose by log-loss, not only by AUC.</aside>
+</section>

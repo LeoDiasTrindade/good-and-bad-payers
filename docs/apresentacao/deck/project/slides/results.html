@@ -1,0 +1,21 @@
+<section id="results">
+<div class="head">
+<p class="eyebrow">RESULTS ON THE TEST SET, OPENED ONCE</p>
+<h2>The explainable model gives up only 0.008 AUC</h2>
+</div>
+<div class="cols">
+<img class="fig-roc" src="/_blob/09249282c3075f91e4d685e8faf9bbda" alt="ROC curves on the test set: random forest AUC 0.866 and logistic regression AUC 0.858 almost overlap, both far above the coin-flip diagonal">
+<div class="res-text">
+<p>On 30,000 clients never used for any choice, the forest reaches an AUC of 0.866 and the logistic regression 0.858 (Gini 0.73 and 0.72), close to their cross-validated scores: no sign of leakage.</p>
+<p>With a cut-off chosen in cross-validation to catch 70% of defaulters:</p>
+<table class="tbl-sm">
+<tr><th style="width:34%">Model</th><th class="num">Approved</th><th class="num">Bad rate of approved</th><th class="num">Good payers refused</th></tr>
+<tr><td>Logistic regression</td><td class="num">80.0%</td><td class="num">2.4%</td><td class="num">4,590</td></tr>
+<tr><td>Random forest</td><td class="num">82.1%</td><td class="num">2.4%</td><td class="num">3,949</td></tr>
+</table>
+<p>Approving four in five applicants cuts the bad rate from 6.7% to 2.4%. At the same bad rate, the forest approves <b>649 more customers</b>.</p>
+</div>
+</div>
+<div class="foot"><img src="/_blob/60dbc063ab64cbb4bdc40264543da5bc" alt="UFABC"><div class="foot-line"></div><p class="foot-n">08</p></div>
+<aside>Only now did I open the test set. The forest reaches an AUC of 0.866 and the logistic regression 0.858, close to their cross-validated scores, so nothing leaked. The explainable model gives up only 0.008. In credit terms: with a cut-off that catches 70 percent of defaulters, the bank approves about four in five applicants, and the bad rate among those approved falls from 6.7 to 2.4 percent. At that same bad rate, the forest approves 649 more customers.</aside>
+</section>

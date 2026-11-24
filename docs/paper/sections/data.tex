@@ -1,20 +1,93 @@
 \section{Data}
 \label{sec:data}
-% Descreva o conjunto de dados, sua fonte e o pré-processamento relevante.
-% Subseções sugeridas: ajuste ao conteúdo efetivo do trabalho.
+
 \subsection{Data source and variables}
 \label{sec:data-source}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui.
-Nullam id dolor id nibh ultricies vehicula ut id elit. Sed posuere consectetur
-est at lobortis. Aenean eu leo quam, pellentesque ornare sem lacinia quam
-venenatis vestibulum. Etiam porta sem malesuada magna mollis euismod. Morbi
-leo risus, porta ac consectetur ac, vestibulum at eros.
+The dataset comes from the Kaggle competition \emph{Give Me Some Credit}
+\citep{kaggle2011givemesomecredit}. The labelled file has 150{,}000 clients,
+ten numerical features (Table~\ref{tab:variables}) and the binary target
+\texttt{SeriousDlqin2yrs}, equal to 1 when the client was 90 days or more past
+due within two years. Only 10{,}026 clients (6.7\%) are positive. The
+competition's second file (101{,}503 clients) has no labels, so every result in
+this paper comes from the labelled file; the unlabelled file is used only for
+an optional competition submission.
 
-\subsection{Preprocessing}
+\begin{table}[ht]
+  \centering
+  \footnotesize
+  \caption{Features, as described in the competition's data dictionary.}
+  \label{tab:variables}
+  \begin{tabular}{@{}lp{8.6cm}@{}}
+    \toprule
+    Column & Description \\
+    \midrule
+    \texttt{RevolvingUtilizationOfUnsecuredLines} & Balance on credit cards and personal lines of credit divided by the sum of their limits \\
+    \texttt{age} & Age of the borrower in years \\
+    \texttt{NumberOfTime30-59DaysPastDueNotWorse} & Times 30--59 days past due (but no worse) in the last two years \\
+    \texttt{NumberOfTime60-89DaysPastDueNotWorse} & Times 60--89 days past due (but no worse) in the last two years \\
+    \texttt{NumberOfTimes90DaysLate} & Times 90 days or more past due \\
+    \texttt{DebtRatio} & Monthly debt payments, alimony and living costs divided by monthly gross income \\
+    \texttt{MonthlyIncome} & Monthly income \\
+    \texttt{NumberOfOpenCreditLinesAndLoans} & Open loans (e.g.\ car loan, mortgage) and lines of credit (e.g.\ credit cards) \\
+    \texttt{NumberRealEstateLoansOrLines} & Mortgage and real-estate loans, including home-equity lines \\
+    \texttt{NumberOfDependents} & Dependents in the family, excluding the client \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Data quality and preprocessing}
 \label{sec:preprocessing}
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Cras
-mattis consectetur purus sit amet fermentum. Maecenas sed diam eget risus
-varius blandit sit amet non magna. Cum sociis natoque penatibus et magnis dis
-parturient montes, nascetur ridiculus mus. Integer posuere erat a ante
-venenatis dapibus posuere velit aliquet. Donec ullamcorper nulla non metus
-auctor fringilla.
+The exploratory analysis found five problems, each handled by a fixed rule
+that looks only at the row itself:
+\begin{enumerate}
+  \item \emph{Impossible age.} One client has age 0; it is set to missing.
+  \item \emph{Revolving utilization.} The ratio should be close to 1 at most,
+  and 99\% of clients are below 1.1, but the maximum is 50{,}708. Values above
+  4 (400\% of the limit; 264 clients) are treated as recording errors.
+  \item \emph{Special codes in the late-payment counts.} The three counts jump
+  from at most 17 to the values 96 and 98. These 269 clients have the codes in
+  all three columns at once and a default rate of 54.6\%, so the codes are not
+  counts but a separate signal. They are set to missing and flagged.
+  \item \emph{Debt ratio without income.} Monthly income is missing for 29{,}731
+  clients (19.8\%). For them the median debt ratio is 1{,}159, against 0.30 for
+  the others, which suggests the ratio was computed without an income
+  (an absolute debt). The debt ratio is set to missing whenever income is
+  missing.
+  \item \emph{Missing dependents.} 3{,}924 clients have no number of
+  dependents; all of them also lack income.
+\end{enumerate}
+Missing values turned out to be informative: clients without income default
+\emph{less} often than the others (5.6\% against 6.9\%). Imputing them alone
+would erase this signal, so four binary flags are added (income missing,
+dependents missing, late-payment codes 96/98, revolving utilization above
+400\%) before the remaining gaps are filled with the training median.
+Figure~\ref{fig:eda} summarizes the main relationships with the target.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{fig_eda}
+  \caption{Default rate in the training set by (a) number of times 30--59
+  days late, (b) decile of revolving utilization, (c) age band and (d) the
+  missing/invalid flags. The dashed line is the overall rate (6.7\%).}
+  \label{fig:eda}
+\end{figure}
+
+The steps differ in whether they learn from the data. The five rules and the
+flags are row-wise and learn nothing, so they can be applied anywhere. The
+median imputation, the standardization and the models do learn statistics
+from the data, and are therefore fitted only on the training folds of each
+cross-validation round, inside a scikit-learn pipeline
+\citep{pedregosa2011scikit}. Fitting them on all rows before splitting would
+leak information from the validation rows into training (\emph{door~1} of
+leakage in \citealp{oku2026slides}). For the logistic regression only, the
+nine long-tailed features (skewness above 80 for income and debt ratio) are
+replaced by $\log(1+x)$ and all numerical features are standardized, so that
+the penalty compares coefficients on a common scale; the flags stay as 0/1.
+
+We also tried hand-made features. A weighted sum of the three late-payment
+counts had the highest correlation with the target (0.36, against 0.31 for the
+best single count), but it is an exact linear combination of columns already
+in the model: for a linear model it adds no information and makes the design
+matrix rank-deficient \citep{oku2026slides}. The ratios we tried were either
+weaker than the feature they came from or almost uncorrelated with the
+target, so none was kept.

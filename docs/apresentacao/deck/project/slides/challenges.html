@@ -1,0 +1,16 @@
+<section id="challenges">
+<div class="head">
+<h2>Six data traps, each fixed before modelling</h2>
+</div>
+<div class="traps">
+<div class="trap trap-th" style="transform:translate(-5px, 57px)"><p></p><p style="color:#ffffff">CHALLENGE</p><p style="color:#ffffff">WHAT I FOUND</p><p style="color:#ffffff">WHAT I DID</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">01</p><p class="trap-t">Impossible values</p><p class="trap-f">Age 0 (1 client); revolving use up to 50,708× the credit limit (264 clients above 4×)</p><p class="trap-d">Set to missing; a flag for revolving above 400%</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">02</p><p class="trap-t">Codes posing as counts</p><p class="trap-f">Late counts jump from ≤17 to 96 and 98: 269 clients, all three columns, 55% default</p><p class="trap-d">Set to missing; one flag for the codes</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">03</p><p class="trap-t">A ratio without its denominator</p><p class="trap-f">Income missing for 29,731 clients (20%); their median debt ratio is 1,159 vs 0.30</p><p class="trap-d">Debt ratio set to missing when income is</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">04</p><p class="trap-t">Missing values that inform</p><p class="trap-f">No income: 5.6% default vs 6.9%; dependents are missing only when income is</p><p class="trap-d">Flags, instead of imputing the signal away</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">05</p><p class="trap-t">Long tails</p><p class="trap-f">Skewness of 127 (income) and 81 (debt ratio)</p><p class="trap-d">log(1 + x) for the logistic regression</p></div>
+<div class="trap" style="transform:translate(-5px, 57px)"><p class="trap-n">06</p><p class="trap-t">A leak in my own EDA</p><p class="trap-f">I first imputed medians using all rows, test rows included</p><p class="trap-d">Every step that learns moved inside the pipeline</p></div>
+</div>
+<div class="foot"><img src="/_blob/60dbc063ab64cbb4bdc40264543da5bc" alt="UFABC"><div class="foot-line"></div><p class="foot-n">04</p></div>
+<aside>Those flags came from traps in the data. Impossible values, like an age of zero. Codes 96 and 98 posing as late-payment counts. A debt ratio computed without income. Missing values that carry signal. Long tails. And a leak in my own first notebook, which imputed medians using all rows, test rows included. Each trap became a fixed rule in a shared module, and every step that learns moved inside the pipeline.</aside>
+</section>

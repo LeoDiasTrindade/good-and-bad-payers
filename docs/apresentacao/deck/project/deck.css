@@ -1,0 +1,99 @@
+/* Identidade visual UFABC sobre fundo preto (Manual de Identidade Visual, 2018):
+   detalhes no verde Pantone 349C #006633 e no amarelo Pantone 116C #FFCC00,
+   marca na versão monocromática branca (p. 14), tipografia Verdana.
+   Os gráficos seguem o tema padrão do seaborn; as caixas usam contorno tracejado branco. */
+section {
+  --black: #0D0D0D;
+  --green: #006633;
+  --yellow: #FFCC00;
+  --white: #FFFFFF;
+  --text: #D9D9D9;
+  --muted: #A6A6A6;
+  --dash: #F2F2F2;
+  font-family: Verdana, Geneva, sans-serif;
+  background: var(--black);
+  color: var(--text);
+  padding: 96px 128px 168px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+h1, h2, h3 { font-family: Verdana, Geneva, sans-serif; color: var(--white); }
+h1 { font-size: 88px; font-weight: 400; line-height: 1.1; }
+h2 { font-size: 56px; font-weight: 400; line-height: 1.15; }
+h3 { font-size: 28px; font-weight: 700; line-height: 1.25; }
+p { font-size: 28px; line-height: 1.4; }
+li { font-size: 28px; line-height: 1.4; }
+
+/* Título: rótulo amarelo e título branco que diz a conclusão */
+.head { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--yellow); }
+
+/* Rodapé: marca UFABC, fio branco e número do slide em branco */
+.foot { position: absolute; left: 128px; bottom: 64px; width: 1664px; height: 48px; display: flex; align-items: center; gap: 24px; }
+.foot img { width: 138px; height: 44px; object-fit: contain; }
+.foot-line { flex: 1; height: 2px; background: var(--white); }
+.foot-n { font-size: 24px; font-weight: 700; color: var(--white); }
+
+.small { font-size: 24px; line-height: 1.4; }
+.spacer { flex: 1; }
+.lead { color: var(--white); }
+.link { font-size: 26px; color: var(--muted); }
+.link a { color: var(--yellow); }
+.hl { color: var(--yellow); }
+
+/* Capa: a ilustração tem fundo transparente */
+.cover { padding: 128px; gap: 0; }
+.cover-art { position: absolute; right: 48px; top: 340px; width: 820px; height: 542px; object-fit: contain; }
+.cover-logo { width: 302px; height: 96px; object-fit: contain; object-position: left center; }
+.cover-main { width: 760px; display: flex; flex-direction: column; gap: 28px; }
+.subtitle { font-size: 32px; line-height: 1.35; color: var(--muted); }
+.byline { display: flex; flex-direction: column; gap: 6px; }
+.by-row { display: flex; gap: 56px; }
+.by-name { font-size: 28px; line-height: 1.4; color: var(--white); }
+.by-prof { font-size: 28px; line-height: 1.4; color: var(--text); }
+.by-course { font-size: 36px; line-height: 1.35; color: var(--white); margin-top: 10px; }
+
+/* Caixas: só contorno tracejado branco */
+.cols { display: flex; gap: 40px; }
+.facts { display: flex; flex-direction: column; gap: 10px; }
+.stat-block { width: 520px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.stat { font-size: 120px; line-height: 1; color: var(--yellow); }
+.callout { font-size: 28px; line-height: 1.4; color: var(--text); border: 2px dashed var(--dash); border-radius: 12px; padding: 22px 32px; }
+
+/* Método: dois modelos em colunas e o protocolo em tópicos */
+.card { flex: 1; border: 2px dashed var(--dash); border-radius: 12px; padding: 26px 30px; display: flex; flex-direction: column; gap: 12px; }
+.card .tag { font-size: 24px; font-weight: 700; color: var(--muted); }
+.card-list { display: flex; flex-direction: column; gap: 6px; margin: 0; padding-left: 32px; }
+.card-list li { font-size: 24px; line-height: 1.4; }
+.proto { display: flex; flex-direction: column; gap: 12px; }
+.proto-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding-left: 36px; }
+.proto-list b { color: var(--white); }
+
+/* Desafios da EDA: linhas numeradas em grade */
+.traps { display: flex; flex-direction: column; }
+.trap { display: grid; grid-template-columns: 64px 300px 1fr 440px; gap: 32px; padding: 16px 0; border-bottom: 1px solid #333333; align-items: start; }
+.trap-th { padding: 0 0 12px; }
+.trap-th p { font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--yellow); }
+.trap-n { font-size: 28px; font-weight: 700; color: var(--yellow); }
+.trap-t { font-size: 26px; font-weight: 700; line-height: 1.35; color: var(--white); }
+.trap-f { font-size: 24px; line-height: 1.4; color: var(--text); }
+.trap-d { font-size: 24px; line-height: 1.4; color: var(--white); }
+
+/* Tabelas */
+.tbl { font-size: 24px; color: var(--text); width: 1664px; }
+.tbl-sm { font-size: 24px; color: var(--text); }
+.tbl th, .tbl-sm th { color: var(--yellow); }
+.tbl-sm .num { text-align: right; }
+
+/* Gráficos do notebook (tema padrão do seaborn) */
+.fig-wide { width: 1664px; object-fit: contain; border-radius: 8px; }
+.fig-roc { width: 600px; height: 600px; object-fit: contain; border-radius: 8px; }
+.res-text { flex: 1; display: flex; flex-direction: column; gap: 22px; }
+
+/* Encerramento: lista em uma coluna e agradecimento */
+.list { display: flex; flex-direction: column; gap: 32px; margin: 0; padding-left: 36px; }
+.list b { color: var(--white); }
+.thanks { font-size: 56px; line-height: 1.15; color: var(--white); }

@@ -1,0 +1,35 @@
+<section id="method">
+<div class="head">
+<p class="eyebrow">METHOD</p>
+<h2>Both models follow one leak-free protocol</h2>
+</div>
+<div class="cols">
+<div class="card">
+<h3>Logistic regression</h3>
+<ul class="card-list">
+<li>p = σ(β₀ + xᵀβ), fitted on the log-loss</li>
+<li>Each e^β is an odds ratio, so a refusal can be explained</li>
+<li>log(1 + x) on long tails, standardized, ridge or lasso</li>
+</ul>
+</div>
+<div class="card">
+<h3>Random forest</h3>
+<ul class="card-list">
+<li>300 trees on bootstrap samples, √p features per split</li>
+<li>Finds non-linear effects and interactions by itself</li>
+<li>Tuned: minimum number of clients per leaf</li>
+</ul>
+</div>
+</div>
+<div class="proto">
+<h3>The same protocol for both</h3>
+<ul class="proto-list" style="transform:translate(0, 28px)">
+<li><b>Split:</b> 80/20, stratified; the test set stays locked until the end.</li>
+<li><b>Choose:</b> 5-fold stratified cross-validation for every choice.</li>
+<li><b>No leakage:</b> everything that learns sits inside the pipeline.</li>
+<li><b>Grade:</b> pick by log-loss, report AUC, open the test set once.</li>
+</ul>
+</div>
+<div class="foot"><img src="/_blob/60dbc063ab64cbb4bdc40264543da5bc" alt="UFABC"><div class="foot-line"></div><p class="foot-n">05</p></div>
+<aside>I compared two models from opposite ends of the trade-off discussed in Lecture 9. The logistic regression is the main method: every coefficient is an odds ratio, so a refusal can be explained to the client. The random forest finds non-linear effects and interactions on its own, but is harder to explain. Both follow the same protocol: a stratified 80/20 split with the test set locked away, five-fold cross-validation for every choice, and the test set opened only once, at the end.</aside>
+</section>

@@ -1,0 +1,16 @@
+{
+  "v": 5,
+  "createdOnFiles": {"v": 1, "at": "2026-11-23T21:00:00Z"},
+  "lists": "css",
+  "format": {"v": 1, "shared": ["project/deck.css"]},
+  "title": "Good and Bad Payers — Lightning Talk",
+  "cover": "cover",
+  "order": ["cover", "question", "eda", "challenges", "method", "logreg", "forest", "results", "drivers", "next"],
+  "sections": {
+    "s1": {"description": "Opening: the Kaggle competition, the question and why accuracy is the wrong metric", "start": "cover"},
+    "s2": {"description": "Process: what the data showed and hid, the two models, the protocol and the tuning", "start": "eda"},
+    "s3": {"description": "Findings on the test set, what drives the risk, and what I would do differently", "start": "results"}
+  },
+  "faces": {},
+  "designSystems": []
+}
