@@ -8,25 +8,31 @@ deck = Path(sys.argv[1]); out = Path(sys.argv[2])
 meta = json.loads((deck / "deck.json").read_text(encoding="utf-8"))
 css = (deck / "deck.css").read_text(encoding="utf-8")
 slides = "\n".join((deck / "slides" / f"{sid}.html").read_text(encoding="utf-8") for sid in meta["order"])
+# Imagens do deck online (/_blob/<id>) apontam para as cópias locais em deck/assets
+assets = deck.parent / "assets.json"
+if assets.exists():
+    for blob, local in json.loads(assets.read_text(encoding="utf-8")).items():
+        slides = slides.replace(blob, local)
+fonts = "\n".join(f'<link rel="stylesheet" href="{f["href"]}">' for f in meta.get("faces", {}).values() if "href" in f)
 html = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{meta['title']}</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400;600&display=swap">
+{fonts}
 <style>
 {css}
 /* ---- viewer (only in this standalone file) ---- */
-html, body {{ margin: 0; height: 100%; background: #0E1424; overflow: hidden; }}
+html, body {{ margin: 0; height: 100%; background: #000000; overflow: hidden; }}
 #stage {{ position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center center; }}
-#stage > section {{ position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }}
+#stage > section {{ position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; isolation: isolate; }}
 #stage > section:not(.active) {{ display: none; }}
 #stage h1, #stage h2, #stage h3, #stage p {{ margin: 0; }}
 #stage aside {{ display: none; }}
-.tbl {{ border-collapse: collapse; }}
-.tbl th, .tbl td {{ text-align: left; vertical-align: top; padding: 18px 16px; border-bottom: 1px solid #D6D3CA; }}
-.tbl th {{ color: #15203B; font-weight: 600; }}
+.tbl, .tbl-sm {{ border-collapse: collapse; }}
+.tbl th, .tbl td, .tbl-sm th, .tbl-sm td {{ text-align: left; vertical-align: top; padding: 10px 16px; border-bottom: 1px solid #333333; }}
+.tbl th, .tbl-sm th {{ font-weight: 700; }}
 #counter {{ position: fixed; right: 16px; bottom: 10px; font: 14px Arial, sans-serif; color: #8A90A0; }}
 #notes {{ position: fixed; left: 0; right: 0; bottom: 0; max-height: 40%; overflow: auto; display: none;
           background: rgba(14,20,36,.95); color: #E8EAF0; font: 20px/1.45 Arial, sans-serif; padding: 18px 28px; }}
@@ -49,6 +55,13 @@ html, body {{ margin: 0; height: 100%; background: #0E1424; overflow: hidden; }}
 const stage = document.getElementById('stage');
 const slides = [...stage.querySelectorAll(':scope > section')];
 const counter = document.getElementById('counter'), notes = document.getElementById('notes');
+// Como no app Slides: elementos fixados antes do primeiro filho em fluxo ficam atrás do texto
+slides.forEach(s => {{
+  for (const c of s.children) {{
+    if (c.tagName === 'ASIDE') continue;
+    if (getComputedStyle(c).position === 'absolute') c.style.zIndex = '-1'; else break;
+  }}
+}});
 let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
 function fit() {{ const s = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = `translate(-50%, -50%) scale(${{s}})`; }}
 function show(n) {{
