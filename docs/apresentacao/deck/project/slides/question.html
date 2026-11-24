@@ -1,14 +1,20 @@
 <section id="question">
 <div class="head">
-<p class="eyebrow">THE QUESTION</p>
-<h2>Can we rank loan applicants by their risk?</h2>
+<h2 style="font-weight:400">Give Me Some Credit, a Kaggle competition</h2>
 </div>
-<p>Kaggle’s <i>Give Me Some Credit</i>: for each past client, their credit history, income and age, and whether they became <b>90+ days late within two years</b>. A bank needs a score that <b>ranks</b> well and a reason it can <b>explain</b>.</p>
-<div class="stats">
-<div class="stat"><p class="num">150,000</p><p class="label">labelled clients</p></div>
-<div class="stat"><p class="num">10</p><p class="label">numerical features</p></div>
-<div class="stat"><p class="num num-orange">6.7%</p><p class="label">defaulted</p></div>
+<div class="cols">
+<div class="facts" style="flex:1">
+<p class="lead" style="transform:translate(0, 29px)">Launched on Kaggle in 2011 with one goal <i>“improve on the state of the art in credit scoring by predicting the probability that somebody will experience financial distress in the next two years.”</i></p>
+<ul style="transform:translate(0, 124px)">
+<li><b>Data:</b> 150,000 past borrowers with a known outcome, plus 101,503 to score.</li>
+<li><b>10 features:</b> late payments, use of revolving credit, debt ratio, income, age, dependents, open and real-estate loans.</li>
+<li><b>Target:</b> serious delinquency, 90 or more days past due within two years.</li>
+<li><b>Metric:</b> AUC, the area under the ROC curve.</li>
+</ul>
+<p class="link" style="transform:translate(0, -192px)">Competition page <a href="https://www.kaggle.com/c/GiveMeSomeCredit">kaggle.com/c/GiveMeSomeCredit</a></p>
 </div>
-<p class="callout">“Everyone repays” is already <b>93.3% accurate</b>, so accuracy is useless here. I use <b>AUC</b> to judge the ranking and <b>log-loss</b> to judge the probabilities (Lectures 6 and 10).</p>
-<aside>The data is the Kaggle competition Give Me Some Credit: 150 thousand past clients, ten numerical features, and a label saying whether they became seriously late. Only 6.7 percent did. That number shapes everything: a model that says “everyone repays” is already 93 percent accurate, without looking at the data. So, as in Lecture 6, accuracy is out. I judge the ranking with the AUC and the probabilities with the log-loss.</aside>
+</div>
+<p class="callout" style="transform:translate(0, 124px)"><b>My question:</b> can we rank applicants by their risk, and how much ranking power does an explainable model give up?</p>
+<div class="foot"><img src="/_blob/60dbc063ab64cbb4bdc40264543da5bc" alt="UFABC"><div class="foot-line"></div><p class="foot-n">02</p></div>
+<aside>The data comes from Give Me Some Credit, a Kaggle competition from 2011: 150 thousand past borrowers and ten features, such as late payments, use of revolving credit, debt ratio, income and age. The bad rate is 6.7 percent, about seven in every hundred borrowers. So accuracy is useless: calling everyone a good payer is already 93 percent accurate. I judge the models by AUC, how well they rank risk, and by log-loss. My question: how much ranking power does an explainable model give up?</aside>
 </section>

@@ -1,27 +1,9 @@
 <section id="eda">
 <div class="head">
-<p class="eyebrow">EXPLORATORY ANALYSIS</p>
-<h2>What the data was hiding</h2>
+<h2>Late payments raise default risk over tenfold</h2>
 </div>
-<div class="cols">
-<div class="chart-block">
-<p class="small"><b>Default rate</b> by times 30–59 days late<br>(all clients: 6.7%)</p>
-<div class="chart">
-<div class="bar-col"><p class="bar-value">4%</p><div class="bar" style="height:32px"></div></div>
-<div class="bar-col"><p class="bar-value">15%</p><div class="bar" style="height:119px"></div></div>
-<div class="bar-col"><p class="bar-value">27%</p><div class="bar" style="height:212px"></div></div>
-<div class="bar-col"><p class="bar-value">35%</p><div class="bar" style="height:280px"></div></div>
-<div class="bar-col"><p class="bar-value">44%</p><div class="bar" style="height:348px"></div></div>
-<div class="bar-col"><p class="bar-value">46%</p><div class="bar" style="height:364px"></div></div>
-</div>
-<div class="axis"><p>0</p><p>1</p><p>2</p><p>3</p><p>4</p><p>5+</p></div>
-</div>
-<div class="findings">
-<div class="finding"><h3>Codes 96 and 98 in the late counts</h3><p class="small">269 clients, always in all three columns, 55% default. Not counts: a signal of its own.</p></div>
-<div class="finding"><h3>A debt ratio without income</h3><p class="small">When income is missing, the median “ratio” is 1,159 (vs 0.30): an absolute debt.</p></div>
-<div class="finding"><h3>Missing income is not more risk</h3><p class="small">Clients without income default less: 5.6% vs 6.9%.</p></div>
-<p class="small"><b>Fix:</b> row-wise rules plus 4 flags, then impute inside the pipeline.</p>
-</div>
-</div>
-<aside>Before modelling, the exploratory analysis. Past late payments are the strongest signal: the default rate goes from 4 percent with none to over 40 percent with four or more. But the data also hid three traps. The late-payment counts jump to codes 96 and 98: 269 clients, with 55 percent default, so not counts at all. When income is missing, the debt ratio is in the thousands, so it is not a ratio. And clients without income default less, not more. I turned these into explicit rules and four flags instead of just imputing them away.</aside>
+<img class="fig-wide" src="/_blob/26cc2bbbc5ebfed929b0fc76174279be" alt="Default rate in the training set: rises from 4% with no late payment to about 45% with four or more; rises sharply in the top deciles of revolving use; falls with age; 5.6% for clients without income against 7% with income, and 55% for clients with codes 96 or 98" style="height:400px;transform:translate(0, 47px)">
+<p style="transform:translate(0, 98px)">Past late payments and heavy use of revolving credit raise the risk sharply, and older clients default less. Panel (d) shows the flags I created in the EDA: they carry signal of their own.</p>
+<div class="foot"><img src="/_blob/60dbc063ab64cbb4bdc40264543da5bc" alt="UFABC"><div class="foot-line"></div><p class="foot-n">03</p></div>
+<aside>First, what the training data shows. Past late payments are the strongest signal: the bad rate goes from 4 percent with none to over 40 percent with four or more, more than tenfold. Heavy use of revolving credit raises the risk sharply in the top deciles, and older clients default less. The last panel shows two flags I created: clients without income default slightly less, and clients with codes 96 or 98 default more than half the time.</aside>
 </section>
