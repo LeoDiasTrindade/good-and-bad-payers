@@ -68,7 +68,9 @@ lowest validation log-loss) gives a cross-validated AUC of 0.863.
 
 \paragraph{Test set.} On the 30{,}000 test clients the logistic regression
 reaches an AUC of 0.858 and the random forest 0.866
-(Figure~\ref{fig:roc}), both within 0.007 of their cross-validated values. Over
+(Figure~\ref{fig:roc}), both within 0.007 of their cross-validated values. In
+the Gini coefficient that credit-risk teams usually report ($2\,\mathrm{AUC}-1$),
+this is 0.72 against 0.73. Over
 most of the ROC curve the two models are almost indistinguishable; the forest
 is ahead mainly between 10\% and 40\% of false positives. With the default
 threshold of 0.5, both models beat the constant model's accuracy by less than
@@ -88,7 +90,12 @@ regression and 0.101 for the forest. Applied unchanged to the test set
 (Table~\ref{tab:threshold}), both still catch about 70\% of defaulters, so the
 choice generalized. For the same recall, the forest refuses 641 fewer good
 payers (3{,}949 against 4{,}590 false positives, 14\% fewer), which is how its
-higher AUC translates into a business decision.
+higher AUC translates into a business decision. In the terms of a credit
+desk, every client below the threshold is approved: the logistic regression
+approves 80.0\% of the applicants (TN + FN) and the forest 82.1\%, and the bad
+rate among approved clients (FN over approved) falls from 6.7\% in the whole
+test portfolio to 2.4\% for both models. At the same bad rate, the forest
+approves 649 more clients.
 
 \begin{table}[ht]
   \centering
