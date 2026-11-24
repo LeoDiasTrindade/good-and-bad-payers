@@ -19,3 +19,8 @@ wheels/
 
 # outputs gerados
 submissions/
+
+# material de referência local (não versionado)
+docs/ufabc/
+docs/pictogramas/
+docs/ml-project.pdf
