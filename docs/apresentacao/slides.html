@@ -142,7 +142,7 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 <div class="byline">
 <div class="by-row"><p class="by-name" style="color:#a6a6a6">Leonardo Dias Trindade da Silva</p></div>
 <p class="by-prof" style="color:#a6a6a6">Professor Dr. Amanda Yumi Ambriola Oku</p>
-<p class="by-course" style="font-size:39px" data-fit="grow">Machine Learning · Final project</p>
+<p class="by-course" style="font-size:39px" data-fit="grow">Machine Learning (MCZA002-17) - Final project</p>
 </div>
 <aside>Hi, I’m Leonardo. My project asks the question every lender asks before granting credit: what is the probability that this person will be ninety days or more past due in the next two years? In five minutes I’ll show what I chose, what the data was hiding, what I tried, what I found, and what I would do differently.</aside>
 </section>
@@ -160,7 +160,7 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 <li><b>Target:</b> serious delinquency, 90 or more days past due within two years.</li>
 <li><b>Metric:</b> AUC, the area under the ROC curve.</li>
 </ul>
-<p class="link" style="transform:translate(0, -192px)">Competition page <a href="https://www.kaggle.com/c/GiveMeSomeCredit">kaggle.com/c/GiveMeSomeCredit</a></p>
+<p class="link" style="color:#ffffff;transform:translate(0, -173px)">Competition page <a href="https://www.kaggle.com/c/GiveMeSomeCredit">kaggle.com/c/GiveMeSomeCredit</a></p>
 </div>
 </div>
 <p class="callout" style="transform:translate(0, 124px)"><b>My question:</b> can we rank applicants by their risk, and how much ranking power does an explainable model give up?</p>
@@ -197,8 +197,7 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 
 <section id="method">
 <div class="head">
-<p class="eyebrow">METHOD</p>
-<h2>Both models follow one leak-free protocol</h2>
+<h2>LogReg and RF models</h2>
 </div>
 <div class="cols">
 <div class="card">
@@ -233,8 +232,7 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 
 <section id="logreg">
 <div class="head">
-<p class="eyebrow">LOGISTIC REGRESSION · TUNING</p>
-<h2>Regularization did not help</h2>
+<h2>Tuning LogReg</h2>
 </div>
 <img class="fig-wide" style="height:440px" src="deck/assets/slide_regularizacao.png" alt="Cross-validated AUC and log-loss of ridge and lasso against C: both are flat at AUC 0.852 and log-loss 0.185 for C of 0.1 or more; with strong penalties the lasso falls to AUC 0.5 and the ridge log-loss rises above the constant baseline">
 <p>With 120,000 rows and 14 coefficients there is nothing to shrink: ridge and lasso tie for C ≥ 0.1, and the chosen C = 10 is barely penalized. A strong ridge still ranks well (AUC 0.847) but its probabilities are worse than a constant, so I choose by log-loss. log(1 + x) helped a little (0.851 → 0.852); quantile bins added only 0.003.</p>
@@ -244,8 +242,7 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 
 <section id="forest">
 <div class="head">
-<p class="eyebrow">RANDOM FOREST · TUNING</p>
-<h2>Deep trees memorize the training set</h2>
+<h2>Tuning RF</h2>
 </div>
 <img class="fig-wide" style="height:440px" src="deck/assets/slide_floresta.png" alt="Random forest AUC and log-loss on training and validation folds against the minimum leaf size: with leaves of 1 client the training AUC is 1.000 and the validation AUC is the worst, 0.843; validation is best around 20 to 50 clients per leaf">
 <p>With leaves of 1 client the trees memorize the training folds (AUC 1.000) and validate worst (0.843): overfitting. Larger leaves trade variance for bias; 20 clients per leaf gives the lowest validation log-loss (AUC 0.863). The 300 trees and √p features per split were fixed, not tuned.</p>
@@ -255,7 +252,6 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 
 <section id="results">
 <div class="head">
-<p class="eyebrow">RESULTS ON THE TEST SET, OPENED ONCE</p>
 <h2>The explainable model gives up only 0.008 AUC</h2>
 </div>
 <div class="cols">
@@ -277,7 +273,6 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 
 <section id="drivers">
 <div class="head">
-<p class="eyebrow">RISK DRIVERS</p>
 <h2>Late payments and revolving use drive the risk</h2>
 </div>
 <img class="fig-wide" style="height:560px" src="deck/assets/slide_interpretacao.png" alt="Left: odds ratios of the logistic regression, led by the codes 96/98 flag (12.6), the revolving above 400% flag (2.8) and revolving utilization (1.97); age is below 1 (0.79). Right: random forest importances, led by times 90+ days late, revolving utilization and the other late-payment counts">
@@ -288,15 +283,16 @@ html, body { margin: 0; height: 100%; background: #000000; overflow: hidden; }
 
 <section id="next">
 <div class="head">
-<p class="eyebrow">LOOKING BACK</p>
 <h2>What I would do differently</h2>
 </div>
-<ul class="list" style="width:1657px;min-height:327px;transform:translate(7px, 61px);box-sizing:border-box;flex:0 0 auto">
-<li><b>Code the cleaning rules once, from day one.</b> My EDA imputed on all rows, a leak; a shared module fixed it.</li>
-<li><b>Set the cut-off from real costs.</b> 70% recall is illustrative; a bank weighs the loss on a default against the margin on a good customer.</li>
-<li><b>Try gradient boosting and check calibration.</b> The forest’s edge comes from interactions; boosting is the usual next step.</li>
-<li><b>Ask whether age belongs in the model</b> </li>
-</ul>
+<div data-text style="flex:0 1 auto; font-family:Verdana, sans-serif; font-size:56px; font-weight:400; font-style:normal; line-height:1.15; letter-spacing:0; text-transform:none; color:#f2f2f2">
+    <p></p>
+    <ul>
+      <li><span style="color:#a6a6a6">Set the cut-off from real costs</span></li>
+      <li><span style="color:#a6a6a6">Try new models</span></li>
+      <li><span style="color:#a6a6a6">Ask whether age belongs in the model</span></li>
+    </ul>
+  </div>
 <div class="spacer"></div>
 <p class="thanks">Thank you!</p>
 <aside>What would I do differently? Write the cleaning rules as code from day one. Set the cut-off from real costs: the loss on a default against the margin on a good customer. Try gradient boosting and check calibration. And discuss whether age belongs in a credit model at all. Thank you.</aside>

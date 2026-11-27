@@ -1,7 +1,6 @@
 <section id="forest">
 <div class="head">
-<p class="eyebrow">RANDOM FOREST · TUNING</p>
-<h2>Deep trees memorize the training set</h2>
+<h2>Tuning RF</h2>
 </div>
 <img class="fig-wide" style="height:440px" src="/_blob/bd84a8246940569906ee3ffd8b8f8a5a" alt="Random forest AUC and log-loss on training and validation folds against the minimum leaf size: with leaves of 1 client the training AUC is 1.000 and the validation AUC is the worst, 0.843; validation is best around 20 to 50 clients per leaf">
 <p>With leaves of 1 client the trees memorize the training folds (AUC 1.000) and validate worst (0.843): overfitting. Larger leaves trade variance for bias; 20 clients per leaf gives the lowest validation log-loss (AUC 0.863). The 300 trees and √p features per split were fixed, not tuned.</p>
