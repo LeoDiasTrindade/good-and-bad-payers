@@ -2,9 +2,9 @@
 
 # [Good and Bad Payers](docs/apresentacao/slides.pdf)
 
-**Predicting serious credit delinquency · Logistic regression vs. random forest**
+**Predicting credit delinquency**
 
-Machine Learning final project (MCZA002-17) · UFABC · 2026<br>
+Machine Learning (MCZA002-17) Final Project<br>
 By [Leonardo Dias Trindade da Silva](https://github.com/LeoDiasTrindade)
 
 ![Python](https://img.shields.io/badge/Python-3.13+-333333?style=for-the-badge&logo=python&logoColor=white)
@@ -17,7 +17,7 @@ By [Leonardo Dias Trindade da Silva](https://github.com/LeoDiasTrindade)
 
 ## The competition
 
-[**Give Me Some Credit**](https://www.kaggle.com/c/GiveMeSomeCredit) is a 2011 Kaggle competition with a plain goal: *predict the probability that somebody will experience financial distress in the next two years*.
+[**Give Me Some Credit**](https://www.kaggle.com/c/GiveMeSomeCredit) is a 2011 Kaggle competition with the goal *to predict the probability that somebody will experience financial distress in the next two years*.
 
 - **Data:** 150,000 past borrowers with a known outcome, plus 101,503 to score.
 - **10 features:** past late payments, use of revolving credit, debt ratio, income, age, dependents, open credit lines and real-estate loans.
